@@ -113,7 +113,7 @@
 			        </execution>
 			    </executions>
 			    <configuration>
-			        <repository>rhsb_docker/${project.name}</repository>
+			        <repository>rhsb/${project.name}</repository>
 			        <tag>${project.version}</tag>
 			        <skipDockerInfo>true</skipDockerInfo>
 			    </configuration>
