@@ -1,6 +1,6 @@
 # Docker with Java - DevOps for Spring Microservices
 
-### :sparkles: Basic Docker Commands :sparkles:
+### :sparkles: Docker Introduction :sparkles:
 
 ##### Docker Intallation
 ```
@@ -214,5 +214,60 @@ docker system df
 - Using Dockerfile to build image
 - Using Dockerfile Spotify plugin to build image
 - Creating generic reusable docker file
-- Using JIB plugin to build image
+- Using JIB plugin to build image (Docker file not needed for JIB plugin)
 - Using Fabric8 Docker Maven Plugin to build image
+
+### :sparkles: Docker with Java Spring Boot Todo Web Application :sparkles:
+
+##### To create a war file
+```
+	Right click project -> Run as -> Maven Build -> "clean package" -> Finish
+```
+
+##### Docker file to deploy .war file to Tomcat
+```
+	FROM tomcat:8.0.51-jre8-alpine
+	EXPOSE 8080
+	RUN rm -rf /usr/local/tomcat/webapps/*
+	COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
+	CMD ["catalina.sh","run"]
+```
+##### Explanation of above docker file
+```
+	We need to deploy .war file in Tomcat. So, we are using Tomcat Base Image.
+	Exposing in port 8080.
+	Before copying .war file to Tomcat, we are removing the existing files (If any).
+	Copying .war file to /usr/local/tomcat/webapps/ROOT.war because, this is the path thats needs to be used if we need to deploy in Tomcat.
+	CMD ["catalina.sh","run"] - This is the shell file to launch up Tomcat.
+```
+
+##### Understanding ENTRYPOINT, CMD, COPY and ADD instructions
+```
+	COPY can be used with files, directories.
+	We cannot specify a URL with COPY.
+	We can use files, directories, URLs with ADD.
+	It is recommended to use COPY when just copying files, directories.
+	When using URLs, ADD can be used.
+	
+	CMD is used to pass parameters in docker run command.
+	For example : docker run -p 8080:8080 imageName someCommand
+	So, in docker file, we have specified a command inside CMD.
+	That will be passed to the docker run command.
+	After specifying a command in docker file, if we pass some other command in docker run command, the command specified in docker file will be overridden.
+	Where as when a command is given in ENTRYPOINT, it will always execute and will not be overridden when a command is passed in docker run command.
+	If --entrypoint is used instead of ENTRYPOINT, then it will be overridden when a command is passed in docker run command.
+	
+	When creating an application image, it is recommended to use ENTRYPOINT because, we will have some command(s) which needs to be run always and not to be overridden.
+```
+
+##### Creating account and pushing images to Docker Hub
+```
+	Dcoker Hub : https://hub.docker.com/
+	Enter new Docker ID, Password and Email to Sign up.
+	In Docker Desktop terminal / Docker Toolbox terminal, type docker login.
+	Enter Username which is the Docker ID and password.
+	Once logged in, type "docker push username/repositoryName:tagName"
+	The image will be pushed to the docker hub account.
+	
+	We can also configure in the dockerfile-maven-plugin in pom.xml to push to docker hub whenever we build the application.
+```
