@@ -83,6 +83,7 @@ Open Docker Quickstart Terminal (also known as Docker Client) and execute the be
 - To see all images in my machine -> docker images
 - To see all containers irrespective of their status -> docker container ls -a
 - To stop a container -> docker container stop id (complete id or first few characters of id)
+						 or docker stop id (complete id or first few characters of id)
 
 ##### Pulling MySql official image from Docker Hub
 ```
@@ -130,6 +131,11 @@ If we don't give the version, it will pull the "latest" tag from the repository
 ```
 	docker container prune
 ```
+
+##### To remove a specific stopped container
+```
+	docker rm containerName or containerId
+```
 	
 ##### To shutdown gracefully
 ```
@@ -151,6 +157,12 @@ If we don't give the version, it will pull the "latest" tag from the repository
 	docker run -p 5000:5000 -d --restart=always in28min/todo-rest-api-h2:0.0.1-SNAPSHOT
 	2 most popular values for restart policy -> always, no
 	default is no
+```
+
+##### To restart a container
+```
+	docker container restart containerId
+	or docker container restart containerName
 ```
 
 ##### To see the events happening at the background
@@ -270,4 +282,172 @@ docker system df
 	The image will be pushed to the docker hub account.
 	
 	We can also configure in the dockerfile-maven-plugin in pom.xml to push to docker hub whenever we build the application.
+```
+
+### :sparkles: Docker with Java Spring Boot Todo Web Application using MySQL :sparkles:
+
+##### Connecting MySql to the application
+```
+	Usual method -> Downloading MySql in our machine and connecting the application.
+	Using Docker -> From Docker, we can pull the official image of MySql and run it from docker.
+	We can search mysql in Docker Hub and pull the required version.
+	
+	For example : docker run mysql:5.7
+	In the above command, we are pulling the official mysql image (Version 5.7).
+	We can use docker pull mysql:5.7. But, docker run will pull and run the image if it is not present in our machine.
+```
+
+##### Command to run mysql from docker
+```
+	docker run -d -e MYSQL_ROOT_PASSWORD=dummy -e MYSQL_DATABASE=todos -e MYSQL_USER=todos-user -e MYSQL_PASSWORD=dummy mysql:5.7
+```
+```
+	Explanation for above command:
+		-d -> running in detached mode, so that, terminal is available to execute any other commands when mysql is running.
+		-e -> configuring environment variables
+		Configuring values -> MYSQL_ROOT_PASSWORD, MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD
+		
+	Once the mysql started running, we need to open MySql Shell.
+	MySql Shell has to be downloaded and installed. If we get an error like vcruntime140_1.dll is missing,
+	we need to download the file from google and keep it in mysqlsh.exe path.
+	
+	Once the above requirements are satisfied, double click on mysqlsh.exe file to open MySql Shell.
+	To connect to database, type
+		\connect todos-user@localhost:3306 or \connect todos-user@192.168.99.100:3306
+		\connect MYSQL_USER@localhost:PortNumber of MySql which is running in docker.
+		
+		Note: Default port of MySql is 3306
+		
+	After this, it will ask for password.
+	But, we will get error saying cannot connect to localhost...
+	That is because, in the above docker run command, we did not map the port of mysql image to outside world.
+	
+	Here's the proper command which exposes port:
+	docker run -d -e MYSQL_ROOT_PASSWORD=dummy -e MYSQL_DATABASE=todos -e MYSQL_USER=todos-user -e MYSQL_PASSWORD=dummy --name mysql -p 3306:3306 mysql:5.7
+	--name mysql is used to give a name to the container
+	
+	After this, we can successfully connect MySql Docker Image from MySql Shell.
+```
+```
+	After connecting MySql Docker Image from MySql Shell,
+	we can use the below commands to work.
+	
+	\sql - Switching to SQL mode
+	use databaseName - To work on a particular database
+	select * from tableName;
+```
+
+##### Running Web Application and MySql from Docker
+
+To run MySql
+```
+	docker run -d -e MYSQL_ROOT_PASSWORD=dummy -e MYSQL_DATABASE=todos -e MYSQL_USER=todos-user -e MYSQL_PASSWORD=dummy --name mysql -p 3306:3306 mysql:5.7
+	This command is same as the one that is in the above section.
+```
+To run Web Application:
+```	
+	docker run -p 8080:8080 --link=mysql rhsb/todo-web-application-mysql:0.0.1-SNAPSHOT
+	--link is used to connect Web Application with MySql
+```
+
+##### Connecting Web Application with MySql - Using Link
+```
+	docker run -p 8080:8080 --link=mysql rhsb/todo-web-application-mysql:0.0.1-SNAPSHOT
+	
+	In the above command, we have used --link to connect the application with MySql.
+	Note: --link is deprecated
+```
+
+##### Docker Networking
+
+There are 3 types of networks:
+```
+	- Bridge
+	- Host
+	- None
+```
+
+By default, the containers are launched into the Bridge network.
+
+Command to check the types of networks
+```
+	docker network ls
+```
+To inspect Bridge network
+```
+	docker inspect bridge or
+	docker inspect networkId of bridge
+```
+
+##### Connecting Web Application with MySql - Using Host
+```
+	In bridge network, an internal network is created inside docker. So, we use (-p 8080:8080) to expose it.
+	When launching containers in host network, we need not specify the port.
+	
+	Command to launch containers using host network:
+		docker run -d --network=host rhsb/todo-web-application-mysql:0.0.1-SNAPSHOT
+	
+	Host is like a virtual machine. Web application and MySql will be able to connect. But, we cannot access
+	the application from browser.
+
+	The host networking driver only works on Linux hosts, and is not supported on Docker Desktop for Mac,
+	Docker Desktop for Windows, or Docker EE for Windows Server.
+	Reference: https://docs.docker.com/network/host/
+	
+	If deploying something in cloud, then we can use host networking.
+```
+
+##### Connecting Web Application with MySql - Using None
+```
+	We can use the below command for None network
+		docker run -d --network=none rhsb/todo-web-application-mysql:0.0.1-SNAPSHOT
+	
+	By using this, the container will not have any network at all.
+	So, this is not the option. We don't want the containers to have no network.
+```
+
+##### Connecting Web Application with MySql - Using Custom Network
+```
+	We can create our own network.
+	Make the containers part of it.
+	Now, we can make applications communicate with each other.
+```
+To create a Custom Network:
+```
+	docker network create anyCustomNetworkName
+	For example: docker network create web-application-mysql-network
+```
+Running containers using a custom network:
+```
+	Running MySql in custom network:
+	docker run -d -e MYSQL_ROOT_PASSWORD=dummy -e MYSQL_DATABASE=todos -e MYSQL_USER=todos-user -e MYSQL_PASSWORD=dummy --name mysql -p 3306:3306 --network=web-application-mysql-network mysql:5.7
+	
+	Running Web application in custom network:
+	docker run -d -p 8080:8080 --network=web-application-mysql-network rhsb/todo-web-application-mysql:0.0.1-SNAPSHOT
+```
+
+##### Using Docker Volumes to Persist Data
+
+```
+	Web Application container can be launched using the usual command (As mentioned in the above section).
+	We need to persist/store data in the database even if we stop or restart the mysql container.
+	So, we use a volume only in the mysql container to persist/store the data.
+```
+Command to run mysql container with a volume
+```
+	docker run -d -e MYSQL_ROOT_PASSWORD=dummy -e MYSQL_DATABASE=todos -e MYSQL_USER=todos-user -e MYSQL_PASSWORD=dummy --name mysql -p 3306:3306 --network=web-application-mysql-network --volume mysql-database-volume:/var/lib/mysql mysql:5.7
+```
+
+Explanation for the above command
+```
+	Command to create a volume: --volume mysql-database-volume:/var/lib/mysql
+	We are creating a volume with the name mysql-database-volume and storing the data that is inside
+	this folder (/var/lib/mysql).
+	/var/lib/mysql -> This is the default folder/path inside mysql container where the data is stored.
+```
+
+Few commands to play with Volume
+```
+	To view the list of volumes: docker volume ls
+	To inspect a volume: docker volume inspect volumeid or volumeName
 ```
