@@ -451,3 +451,114 @@ Few commands to play with Volume
 	To view the list of volumes: docker volume ls
 	To inspect a volume: docker volume inspect volumeid or volumeName
 ```
+
+### :sparkles: Docker with Java Spring Boot React Full Stack Application :sparkles:
+
+##### Running the Back end application
+```
+	docker run -d -p 8080:8080 rhsb/rest-api-full-stack:0.0.1-SNAPSHOT
+```
+
+##### Running the Front end application
+```
+	Open the code in Visual Studio Code
+	Install the dependencies: npm install
+	Start the application: npm start
+```
+
+##### To create a production build
+```
+	In Visal Studio Code: npm run build
+```
+
+##### Creating Multi Stage Docker Build for React Frontend Code
+```
+	Refer the dockerfile inside the front end project
+```
+
+##### To build an image in Docker Toolbox
+```
+	Navigate to the project folder from Docker Toolbox.
+	Use the command: docker build .
+```
+
+##### Improve Front End Docker Build - dockerignore
+```
+	Creating a .dockerignore file inside front end project.
+	Adding node_modules in the .dockerignore file so that it won't be sent to docker daemon.
+	After saving .dockerignore file, run the below command
+	docker build . -t rhsb/todo-front-end:0.0.1-SNAPSHOT
+```
+
+##### Other information
+```
+	nginx exposes in 80 by default.
+```
+
+##### Running the front end application after creating image
+```
+	docker run -p 4200:80 rhsb/todo-front-end:0.0.1-SNAPSHOT
+```
+
+##### Using Multi Stage Docker Build for Java REST API Backend
+```
+	Refer the dockerfile inside the back end project
+	Command to run in docker toolbox for building image: docker run .
+	Once it is run, an image would be created.
+	But it won't have any name as we didn't configure it.
+	We can assign a tagName to that image using the following command.
+		docker tag 1cbce00caac7 rhsb/rest-api-full-stack:2stagebuild
+	To run: docker run -p 8080:8080 rhsb/rest-api-full-stack:2stagebuild
+```
+
+##### Docker Compose
+
+Docker compose is used to launch up multiple containers at a time/simultaneously.
+It is also used to associate resources/volumes, network etc.
+
+```
+	Documentation: https://docs.docker.com/compose/
+```
+
+To check the docker-compose version
+```
+	docker-compose -version
+```
+
+docker-compose.yml file
+```
+	Refer docker-compose.yml file present inside the Fullstack application folder
+```
+
+Docker Compose Scale Command
+```
+	docker-compose up
+	docker-compose up -d -> To launch in detached mode
+	
+	docker-compose down -> Will stop the applications and delete the network
+```
+
+To view the details of an image
+```
+	docker images imageName or imageId
+```
+
+##### Using Docker Compose for Java Spring Boot Todo Web Application - MySql
+```
+	Refer docker-compose.yml file inside the application
+```
+
+##### Playing with Docker Compose
+
+- docker-compose up -d
+- docker-compose build
+- docker-compose events -> To see the events that are happening with docker-compose
+- docker-compose config -> To see the configuration
+- docker-compose images -> To see the images that are used inside docker-compose
+- docker-compose ps -> To see the processes, containers, command, state etc.
+- docker-compose top -> To see the processes running in each of the containers
+- docker-compose pause -> To pause all the containers inside docker-compose
+- docker-compose unpause -> To unpause all the containers inside docker-compose
+- docker-compose stop -> To stop the containers inside inside docker-compose
+- docker-compose kill -> To kill the containers inside inside docker-compose
+- docker-compose rm -> To remove all the stopped containers
