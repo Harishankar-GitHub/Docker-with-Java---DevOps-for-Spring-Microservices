@@ -55,7 +55,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			
-			<plugin>
+			<!-- <plugin>
 			    <groupId>com.google.cloud.tools</groupId>
 			    <artifactId>jib-maven-plugin</artifactId>
 			    <version>1.6.1</version>
@@ -72,7 +72,7 @@
 			            </goals>
 			        </execution>
 			    </executions>
-			</plugin>
+			</plugin> -->
 			
 			<!-- We are pasting the below plugin above the dockerfile-maven-plugin
 			which is below this plugin. This maven-dependency-plugin will split the
@@ -100,7 +100,7 @@
 			    </executions>
 			</plugin> -->
 			
-			<!-- <plugin>
+			<plugin>
 			    <groupId>com.spotify</groupId>
 			    <artifactId>dockerfile-maven-plugin</artifactId>
 			    <version>1.4.10</version>
@@ -117,7 +117,7 @@
 			        <tag>${project.version}</tag>
 			        <skipDockerInfo>true</skipDockerInfo>
 			    </configuration>
-			</plugin> -->
+			</plugin>
 		</plugins>
 
 	</build>
