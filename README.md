@@ -131,11 +131,6 @@ If we don't give the version, it will pull the "latest" tag from the repository
 ```
 	docker container prune
 ```
-
-##### To remove a specific stopped container
-```
-	docker rm containerName or containerId
-```
 	
 ##### To shutdown gracefully
 ```
@@ -143,6 +138,9 @@ If we don't give the version, it will pull the "latest" tag from the repository
 	It will wait for sometime to complete any ongoing process and then shutdown
 	When using above command, a signal called SIGTERM is sent to container
 	stop command is used mostly
+	
+	Or docker stop id1 id2 -> To remove multiple containers
+	id1 and id2 are first few characters of container's id.
 ```
 
 ##### To kill immediately
@@ -150,6 +148,13 @@ If we don't give the version, it will pull the "latest" tag from the repository
 	docker container kill ID
 	It will stop the container immediately
 	When using above command, a signal called SIGKILL is sent to container
+```
+
+##### To remove a specific stopped container
+```
+	docker rm containerName or containerId
+	docker rm id1 id2 -> To remove multiple containers
+	id1 and id2 are first few characters of container's id.
 ```
 
 ##### Restart Policy
@@ -534,7 +539,7 @@ Docker Compose Scale Command
 ```
 	docker-compose up
 	docker-compose up -d -> To launch in detached mode
-	
+	Ctrl+C -> Will stop the containers.
 	docker-compose down -> Will stop the applications and delete the network
 ```
 
@@ -562,3 +567,36 @@ To view the details of an image
 - docker-compose stop -> To stop the containers inside inside docker-compose
 - docker-compose kill -> To kill the containers inside inside docker-compose
 - docker-compose rm -> To remove all the stopped containers
+
+### :sparkles: Java Spring Boot Microservices :sparkles:
+
+##### To create images for CES and CCS Applications
+
+- Open 2 Docker Terminals.
+- cd to Microservices folder in both terminals.
+- In 1 terminal, navigate to currency-exchange-service.
+- In another terminal, navigate to currency-conversion-service.
+- mvn clean package in both terminals to build images.
+- If not able to do from Docker Terminal, from IDE we can create image.
+	Right click on project -> Run As -> Maven Build -> Type "clean package" in Goals textbox and click Run.
+
+- After this, open another terminal and cd till Microservices folder.
+- This terminal is to configure network, run etc.
+- The above 2 terminals are to build images for CES and CCS applications.
+
+```
+	Creating network: docker network create currency-network
+```
+##### Launching applications
+```
+	Launching container for Currency Exchange Service
+		docker run -d -p 8000:8000 --network=currency-network --name=currency-exchange-service rhsb/currency-exchange-service:0.0.1-SNAPSHOT
+		
+	Launching container for Currency Conversion Service
+		docker run -d -p 8100:8100 --network=currency-network -e CURRENCY_EXCHANGE_URI=http://currency-exchange-service:8000 --name=currency-conversion-service rhsb/currency-conversion-service:0.0.1-SNAPSHOT
+```
+
+##### Running the applications using Docker Compose
+```
+	Refer docker-compose.yml file
+```

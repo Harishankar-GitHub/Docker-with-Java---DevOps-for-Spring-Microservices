@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  currency-exchange-service:
+    image: rhsb/currency-exchange-service:0.0.1-SNAPSHOT
+
+    ports:
+      - "8000:8000"
+      
+    restart: always
+   
+    networks:
+      - currency-compose-network
+
+  currency-conversion-service:
+    image: rhsb/currency-conversion-service:0.0.1-SNAPSHOT
+    
+    ports:
+      - "8100:8100"
+      
+    restart: always
+    
+    environment:
+      CURRENCY_EXCHANGE_URI: http://currency-exchange-service:8000
+    
+    depends_on:
+      - currency-exchange-service
+      
+    networks:
+      - currency-compose-network
+  
+# Networks to be created to facilitate communication between containers
+networks:
+  currency-compose-network:
