@@ -1,16 +1,30 @@
 version: '3.7'
 
 services:
-  currency-exchange-service:
-    image: rhsb/currency-exchange-service:0.0.1-SNAPSHOT
+  naming-server:
+    image: rhsb/netflix-eureka-naming-server:0.0.1-SNAPSHOT
 
     ports:
-      - "8000:8000"
+      - "8761:8761"
       
     restart: always
    
     networks:
       - currency-compose-network
+      
+  currency-exchange-service:
+    image: rhsb/currency-exchange-service:0.0.1-SNAPSHOT
+
+#    ports:
+#      - "8000:8000"
+      
+    restart: always
+   
+    networks:
+      - currency-compose-network
+      
+    depends_on:
+      - naming-server
 
   currency-conversion-service:
     image: rhsb/currency-conversion-service:0.0.1-SNAPSHOT
@@ -25,6 +39,7 @@ services:
     
     depends_on:
       - currency-exchange-service
+      - naming-server
       
     networks:
       - currency-compose-network

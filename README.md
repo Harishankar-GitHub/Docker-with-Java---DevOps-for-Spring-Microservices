@@ -567,6 +567,7 @@ To view the details of an image
 - docker-compose stop -> To stop the containers inside inside docker-compose
 - docker-compose kill -> To kill the containers inside inside docker-compose
 - docker-compose rm -> To remove all the stopped containers
+- docker-compose logs -f -> To see the logs
 
 ### :sparkles: Java Spring Boot Microservices :sparkles:
 
@@ -599,4 +600,28 @@ To view the details of an image
 ##### Running the applications using Docker Compose
 ```
 	Refer docker-compose.yml file
+```
+
+##### Using Docker to Integrate Java Microservices with Eureka Naming Server
+```
+	Using Eureka Naming Server for
+		Service registry
+		Service Discsovery
+		
+	Refer docker-compose.yml file
+```
+
+URL to access Naming Server:
+```
+		Docker Toolbox: http://192.168.99.100:8761/
+		Docker Desktop: http://localhost:8761/
+```
+
+To scale up instances of a specific service
+```
+	docker-compose up -d scale servicename=2
+	docker-compose up -d scale currency-exchange-service=2
+	docker-compose scale currency-exchange-service=2
+	2 Instances of currency-exchange-service will be up and running
+	When we do this, we have to comment the ports in docker-compose.yml file.
 ```
