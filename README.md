@@ -625,3 +625,35 @@ To scale up instances of a specific service
 	2 Instances of currency-exchange-service will be up and running
 	When we do this, we have to comment the ports in docker-compose.yml file.
 ```
+
+##### Using Docker to Integrate Java Microservices with Zuul API Gateway
+
+Using Zuul API Gateway for
+
+- Authentication, Authorization and Security
+- Rate Limits
+- Fault Tolerance
+- Service Aggregation
+
+Refer docker-compose.yml file
+
+##### Using Docker to Integrate Java Microservices with Zipkin
+```
+	Zipkin is used for Distributed Tracing
+	
+	Refer docker-compose.yml file
+```
+
+##### Running all the applications
+```
+	In Docker Toolbox or Docker Desktop, cd to Microservices folder.
+	Use the commands:
+		docker-compose up -d
+		docker-compose logs -f
+
+	Refer docker-compose.yml file for the information about applications.
+	Refer README.md file for the URLs, other commands etc.
+```
+
+
+

@@ -1,9 +1,49 @@
 version: '3.7'
 
 services:
+
+# -------- RabbitMQ --------
+  rabbitmq:
+    image: rabbitmq:3.5.3-management
+    
+    container_name: rabbitmq
+
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      
+    restart: always
+   
+    networks:
+      - currency-compose-network
+
+# -------- Zipkin Server --------
+  zipkin-server:
+    image: openzipkin/zipkin
+    
+    container_name: zipkin
+    
+    environment:
+      STORAGE_TYPE: mem
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+
+    ports:
+      - "9411:9411"
+      
+    restart: always
+    
+    depends_on:
+      - rabbitmq
+   
+    networks:
+      - currency-compose-network
+      
+# -------- Eureka Naming Server --------
   naming-server:
     image: rhsb/netflix-eureka-naming-server:0.0.1-SNAPSHOT
 
+    container_name: eureka-naming-server
+    
     ports:
       - "8761:8761"
       
@@ -12,34 +52,66 @@ services:
     networks:
       - currency-compose-network
       
-  currency-exchange-service:
-    image: rhsb/currency-exchange-service:0.0.1-SNAPSHOT
+# -------- Zuul Api Gateway --------
+  zuul-api-gateway:
+    image: rhsb/netflix-zuul-api-gateway-server:0.0.1-SNAPSHOT
+    
+    container_name: zuul-api-gateway
+    
+    environment:
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
 
-#    ports:
-#      - "8000:8000"
+    ports:
+      - "8765:8765"
       
     restart: always
+    
+    depends_on:
+      - naming-server
+      - rabbitmq
+      - zipkin-server
    
     networks:
       - currency-compose-network
+     
+# -------- Currency Exchange Service --------      
+  currency-exchange-service:
+    image: rhsb/currency-exchange-service:0.0.1-SNAPSHOT
+    
+    environment:
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+
+    ports:
+      - "8000:8000"
       
+    restart: always
+    
     depends_on:
       - naming-server
+      - rabbitmq
+      - zipkin-server
+   
+    networks:
+      - currency-compose-network    
 
+# -------- Currency Conversion Service --------
   currency-conversion-service:
     image: rhsb/currency-conversion-service:0.0.1-SNAPSHOT
+    
+    environment:
+#      CURRENCY_EXCHANGE_URI: http://currency-exchange-service:8000
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
     
     ports:
       - "8100:8100"
       
     restart: always
     
-    environment:
-      CURRENCY_EXCHANGE_URI: http://currency-exchange-service:8000
-    
     depends_on:
       - currency-exchange-service
       - naming-server
+      - rabbitmq
+      - zipkin-server
       
     networks:
       - currency-compose-network
