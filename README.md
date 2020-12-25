@@ -3,13 +3,12 @@
 ### :sparkles: Docker Introduction :sparkles:
 
 ##### Docker Intallation
-```
-If we have Windows Enterprise or Windows Pro
-	-> Docker Desktop (https://docs.docker.com/engine/install/)
-If we have Windows Home
-	-> Docker Toolbox (https://docs.docker.com/toolbox/overview/)
-	-> I use Docker Toolbox
-```
+
+* If we have Windows Enterprise or Windows Pro
+  * [Docker Desktop](https://docs.docker.com/engine/install/)
+* If we have Windows Home
+  * [Docker Toolbox](https://docs.docker.com/toolbox/overview/)
+* I use Docker Toolbox
 
 ##### To check the version of Docker
 ```
@@ -36,8 +35,8 @@ Open Docker Quickstart Terminal (also known as Docker Client) and execute the be
 			docker run .... is like a shortcut
 ```
 
-##### Docker Registry - https://hub.docker.com/
-##### Registry link for the application which we used earlier - https://hub.docker.com/r/in28min/todo-rest-api-h2
+##### Docker Registry - [Docker Hub](https://hub.docker.com/)
+##### Registry [Link](https://hub.docker.com/r/in28min/todo-rest-api-h2) for the application which we used earlier.
 
 ##### NOTE:
 ```
@@ -278,16 +277,16 @@ docker system df
 ```
 
 ##### Creating account and pushing images to Docker Hub
-```
-	Dcoker Hub : https://hub.docker.com/
-	Enter new Docker ID, Password and Email to Sign up.
-	In Docker Desktop terminal / Docker Toolbox terminal, type docker login.
-	Enter Username which is the Docker ID and password.
-	Once logged in, type "docker push username/repositoryName:tagName"
-	The image will be pushed to the docker hub account.
+
+* [Docker Hub](https://hub.docker.com/)
+* Enter new Docker ID, Password and Email to Sign up.
+* In Docker Desktop terminal / Docker Toolbox terminal, type docker login.
+* Enter Username which is the Docker ID and password.
+* Once logged in, type "docker push username/repositoryName:tagName"
+* The image will be pushed to the docker hub account.
 	
-	We can also configure in the dockerfile-maven-plugin in pom.xml to push to docker hub whenever we build the application.
-```
+* We can also configure in the dockerfile-maven-plugin in pom.xml to push to docker hub whenever we build the application.
+
 
 ### :sparkles: Docker with Java Spring Boot Todo Web Application using MySQL :sparkles:
 
@@ -385,22 +384,21 @@ To inspect Bridge network
 ```
 
 ##### Connecting Web Application with MySql - Using Host
-```
-	In bridge network, an internal network is created inside docker. So, we use (-p 8080:8080) to expose it.
-	When launching containers in host network, we need not specify the port.
+
+* In bridge network, an internal network is created inside docker. So, we use (-p 8080:8080) to expose it.
+* When launching containers in host network, we need not specify the port.
 	
-	Command to launch containers using host network:
-		docker run -d --network=host rhsb/todo-web-application-mysql:0.0.1-SNAPSHOT
+* Command to launch containers using host network:
+	* docker run -d --network=host rhsb/todo-web-application-mysql:0.0.1-SNAPSHOT
 	
-	Host is like a virtual machine. Web application and MySql will be able to connect. But, we cannot access
+* Host is like a virtual machine. Web application and MySql will be able to connect. But, we cannot access
 	the application from browser.
 
-	The host networking driver only works on Linux hosts, and is not supported on Docker Desktop for Mac,
-	Docker Desktop for Windows, or Docker EE for Windows Server.
-	Reference: https://docs.docker.com/network/host/
+* The host networking driver only works on Linux hosts, and is not supported on Docker Desktop for Mac,
+* Docker Desktop for Windows, or Docker EE for Windows Server.
+* Reference: [Host Document](https://docs.docker.com/network/host/)
 	
-	If deploying something in cloud, then we can use host networking.
-```
+If deploying something in cloud, then we can use host networking.
 
 ##### Connecting Web Application with MySql - Using None
 ```
@@ -521,9 +519,7 @@ Few commands to play with Volume
 Docker compose is used to launch up multiple containers at a time/simultaneously.
 It is also used to associate resources/volumes, network etc.
 
-```
-	Documentation: https://docs.docker.com/compose/
-```
+* Documentation: [Docker Compose](https://docs.docker.com/compose/)
 
 To check the docker-compose version
 ```
