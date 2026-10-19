@@ -653,3 +653,9 @@ Refer docker-compose.yml file
 
 
 
+
+## Attribution
+
+This repository contains my notes and practice code from the *Docker with Java - DevOps for Spring Microservices* course by [in28minutes](https://www.in28minutes.com) (Ranga Karanam). The original course material, including its example code, belongs to its author.
+
+The [MIT license](LICENSE) in this repository applies only to my own notes, changes and additions, not to the original course material.
